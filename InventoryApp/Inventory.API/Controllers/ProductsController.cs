@@ -1,4 +1,5 @@
 
+using Inventory.Core.DTOs.Requests;
 using Inventory.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,8 +17,11 @@ public class ProductsController: ControllerBase
     }
     
     [HttpPost]
-    public Task<IActionResult> CreateProduct()
+    public async Task<IActionResult> CreateProduct([FromBody] ProductRequestDTO productRequestDTO)
     {
-        
+        var product =  await _service.CreateProduct(productRequestDTO);
+        if (product == null) return NotFound();
+
+        return Ok(product);
     }
 }
