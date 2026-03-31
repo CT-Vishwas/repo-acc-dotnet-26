@@ -1,0 +1,14 @@
+C:\Users\VishwasKSingh\Workspace\acc-dotnet-workspace\app2\bin\Debug\net10.0\app2.exe
+C:\Users\VishwasKSingh\Workspace\acc-dotnet-workspace\app2\bin\Debug\net10.0\app2.deps.json
+C:\Users\VishwasKSingh\Workspace\acc-dotnet-workspace\app2\bin\Debug\net10.0\app2.runtimeconfig.json
+C:\Users\VishwasKSingh\Workspace\acc-dotnet-workspace\app2\bin\Debug\net10.0\app2.dll
+C:\Users\VishwasKSingh\Workspace\acc-dotnet-workspace\app2\bin\Debug\net10.0\app2.pdb
+C:\Users\VishwasKSingh\Workspace\acc-dotnet-workspace\app2\obj\Debug\net10.0\app2.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\VishwasKSingh\Workspace\acc-dotnet-workspace\app2\obj\Debug\net10.0\app2.AssemblyInfoInputs.cache
+C:\Users\VishwasKSingh\Workspace\acc-dotnet-workspace\app2\obj\Debug\net10.0\app2.AssemblyInfo.cs
+C:\Users\VishwasKSingh\Workspace\acc-dotnet-workspace\app2\obj\Debug\net10.0\app2.csproj.CoreCompileInputs.cache
+C:\Users\VishwasKSingh\Workspace\acc-dotnet-workspace\app2\obj\Debug\net10.0\app2.dll
+C:\Users\VishwasKSingh\Workspace\acc-dotnet-workspace\app2\obj\Debug\net10.0\refint\app2.dll
+C:\Users\VishwasKSingh\Workspace\acc-dotnet-workspace\app2\obj\Debug\net10.0\app2.pdb
+C:\Users\VishwasKSingh\Workspace\acc-dotnet-workspace\app2\obj\Debug\net10.0\app2.genruntimeconfig.cache
+C:\Users\VishwasKSingh\Workspace\acc-dotnet-workspace\app2\obj\Debug\net10.0\ref\app2.dll
