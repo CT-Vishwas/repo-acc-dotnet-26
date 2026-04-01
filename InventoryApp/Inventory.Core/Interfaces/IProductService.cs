@@ -12,5 +12,6 @@ public interface IProductService
     Task<IEnumerable<ProductResponseDTO>> GetAllProducts();
 
     Task<ProductResponseDTO> GetById(int id);
+    Task<PagedResponse<IEnumerable<ProductResponseDTO>>> GetPagedResponseAsync(ProductParameters parameters);
     Task<ProductResponseDTO> UpdateProduct(int id, ProductRequestDTO productRequest);
 }

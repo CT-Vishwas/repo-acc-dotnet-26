@@ -60,9 +60,33 @@ public class ProductRepository : IProductRepository
         return;
     }
 
+    async Task<(object items, int totalCount)> IProductRepository.GetPagedProductsAsync(string? searchTerm, ProductCategory? categoryEnum, string? sortBy, int pageNumber, int pageSize)
+    {
+        var query = _context.Products.AsQueryable();
 
+        // Filter
+        if(categoryEnum.HasValue)
+        query = query.Where(p=> p.Category == categoryEnum.Value);
 
+        if(!string.IsNullOrWhiteSpace(searchTerm))
+        query = query.Where(p=> p.Name.Contains(searchTerm));
 
+        // Sort
+        query = sortBy?.ToLower() switch
+        {
+            "name_desc" => query.OrderByDescending(p => p.Name),
+            "price_asc" => query.OrderBy(p=>p.Price),
+            "price_desc" => query.OrderByDescending(p=>p.Price),
+            _ => query.OrderBy(p => p.Name)
+        };
 
+        // Count and Execute
+        var TotalCount = await query.CountAsync();
+        var items = query
+        .Skip((pageNumber -1) * pageSize)
+        .Take(pageSize)
+        .ToListAsync();
 
+        return (items, TotalCount);
+    }
 }

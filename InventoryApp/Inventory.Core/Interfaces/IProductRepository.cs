@@ -14,4 +14,5 @@ public interface IProductRepository
     Task<Product?> GetAsync(int id);
     // Delete Product
     Task DeleteAsync(int id);
+    Task<(object items, int totalCount)> GetPagedProductsAsync(string? searchTerm, ProductCategory? categoryEnum, string? sortBy, int pageNumber, int pageSize);
 }

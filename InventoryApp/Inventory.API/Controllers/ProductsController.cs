@@ -59,4 +59,10 @@ public class ProductsController: ControllerBase
         return Ok(new ApiResponse<ProductResponseDTO?>(true, "Product deleted successfully", null, []));
     }
 
+    [HttpGet("pages")]
+    public async Task<IActionResult> GetAll([FromQuery] ProductParameters parameters)
+    {
+        var response = await _service.GetPagedResponseAsync(parameters);
+        return Ok(response);
+    }
 }
