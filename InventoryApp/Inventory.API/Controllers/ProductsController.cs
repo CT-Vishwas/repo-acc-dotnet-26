@@ -24,4 +24,13 @@ public class ProductsController: ControllerBase
 
         return Ok(product);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetProducts()
+    {
+        var products =  await _service.GetAllProducts();
+        if (products == null) return NotFound();
+
+        return Ok(products);
+    }
 }

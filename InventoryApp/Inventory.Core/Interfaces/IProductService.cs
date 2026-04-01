@@ -8,4 +8,5 @@ namespace Inventory.Core.Interfaces;
 public interface IProductService
 {
     Task<ProductResponseDTO> CreateProduct(ProductRequestDTO productRequestDTO);
+    Task<IEnumerable<ProductResponseDTO>> GetAllProducts();
 }
