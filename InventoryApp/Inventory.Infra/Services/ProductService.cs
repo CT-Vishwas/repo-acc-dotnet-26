@@ -32,4 +32,15 @@ public class ProductService : IProductService
 
         return productDtos;
     }
+
+    public async Task<ProductResponseDTO> GetById(int id)
+    {
+        var product = await _productRepository.GetAsync(id);
+        if(product is null)
+        {
+            throw new KeyNotFoundException("Product not Found");
+        }
+
+        return _mapper.Map<ProductResponseDTO>(product);
+    }
 }

@@ -1,5 +1,6 @@
 
 using Inventory.Core.DTOs.Requests;
+using Inventory.Core.DTOs.Responses;
 using Inventory.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,7 +23,7 @@ public class ProductsController: ControllerBase
         var product =  await _service.CreateProduct(productRequestDTO);
         if (product == null) return NotFound();
 
-        return Ok(product);
+        return CreatedAtAction(nameof(GetById), new { id = product.Id}, new ApiResponse<ProductResponseDTO>(true, "Product Created successfully", product, []));
     }
 
     [HttpGet]
@@ -31,6 +32,16 @@ public class ProductsController: ControllerBase
         var products =  await _service.GetAllProducts();
         if (products == null) return NotFound();
 
-        return Ok(products);
+        return Ok(new ApiResponse<IEnumerable<ProductResponseDTO>>(true, "Products fetched successfully", products, []));
     }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var product =  await _service.GetById(id);
+        if (product == null) return NotFound();
+
+        return Ok(new ApiResponse<ProductResponseDTO>(true, "Product fetched successfully", product, []));
+    }
+
 }
