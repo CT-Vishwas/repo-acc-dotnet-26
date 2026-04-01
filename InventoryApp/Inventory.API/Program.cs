@@ -1,3 +1,6 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Inventory.Core.DTOs.Validators;
 using Inventory.Core.Interfaces;
 using Inventory.Infra.Data;
 using Inventory.Infra.Repositories;
@@ -17,7 +20,8 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddControllers();
-
+builder.Services.AddValidatorsFromAssemblyContaining<ProductrequestValidator>();
+builder.Services.AddFluentValidationAutoValidation();
 
 var app = builder.Build();
 
