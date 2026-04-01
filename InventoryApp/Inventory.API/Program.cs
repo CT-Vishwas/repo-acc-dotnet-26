@@ -1,10 +1,13 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Inventory.API.Middlewares;
+using Inventory.Core.DTOs.Responses;
 using Inventory.Core.DTOs.Validators;
 using Inventory.Core.Interfaces;
 using Inventory.Infra.Data;
 using Inventory.Infra.Repositories;
 using Inventory.Infra.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,9 +22,25 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+.ConfigureApiBehaviorOptions(options =>
+{
+    options.InvalidModelStateResponseFactory = context =>
+    {
+        var errors = context.ModelState.Values
+        .SelectMany(v=> v.Errors)
+        .Select(e=> e.ErrorMessage)
+        .ToList();
+
+        var response = new ApiResponse<object?>(false,"validationErrors", null, errors);
+        return new BadRequestObjectResult(response);
+    };
+});
 builder.Services.AddValidatorsFromAssemblyContaining<ProductrequestValidator>();
 builder.Services.AddFluentValidationAutoValidation();
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
@@ -32,5 +51,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseExceptionHandler();
 app.MapControllers();
 app.Run();
