@@ -44,4 +44,19 @@ public class ProductsController: ControllerBase
         return Ok(new ApiResponse<ProductResponseDTO>(true, "Product fetched successfully", product, []));
     }
 
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateProduct(int id, [FromBody] ProductRequestDTO productRequest)
+    {
+        var product = await _service.UpdateProduct(id, productRequest);
+        
+        return Ok(new ApiResponse<ProductResponseDTO>(true, "Product updated successfully", product, []));
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteProduct(int id)
+    {
+        await _service.DeleteProduct(id);
+        return Ok(new ApiResponse<ProductResponseDTO?>(true, "Product deleted successfully", null, []));
+    }
+
 }

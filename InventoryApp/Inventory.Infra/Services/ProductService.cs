@@ -1,3 +1,4 @@
+using System.Formats.Asn1;
 using AutoMapper;
 using Inventory.Core.DTOs.Requests;
 using Inventory.Core.DTOs.Responses;
@@ -25,6 +26,12 @@ public class ProductService : IProductService
         return _mapper.Map<ProductResponseDTO>(product);
     }
 
+    public async Task DeleteProduct(int id)
+    {
+        await _productRepository.DeleteAsync(id);
+        return;
+    }
+
     public async Task<IEnumerable<ProductResponseDTO>> GetAllProducts()
     {
         var products = await _productRepository.GetAllAsync();
@@ -40,6 +47,13 @@ public class ProductService : IProductService
         {
             throw new KeyNotFoundException("Product not Found");
         }
+
+        return _mapper.Map<ProductResponseDTO>(product);
+    }
+
+    public async Task<ProductResponseDTO> UpdateProduct(int id, ProductRequestDTO productRequest)
+    {
+        var product = await _productRepository.UpdateAsync(_mapper.Map<Product>(productRequest));
 
         return _mapper.Map<ProductResponseDTO>(product);
     }
