@@ -1,32 +1,68 @@
 using Inventory.Core.Entities;
 using Inventory.Core.Interfaces;
+using Inventory.Infra.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Inventory.Infra.Repositories;
 
 public class ProductRepository : IProductRepository
 {
-    public Task<Product> AddAsync(Product product)
+    private readonly InventoryDbContext _context;
+
+    public ProductRepository(InventoryDbContext inventoryDbContext)
     {
-        throw new NotImplementedException();
+        _context = inventoryDbContext;
     }
 
-    public Task DeleteAsync(int id)
+    public async Task<Product> AddAsync(Product product)
     {
-        throw new NotImplementedException();
+        await _context.Products.AddAsync(product);
+        await _context.SaveChangesAsync();
+
+        return product;
     }
 
-    public Task<IEnumerable<Product>> GetAllAsync()
+    public async Task<IEnumerable<Product>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        return await _context.Products.ToListAsync();
     }
 
-    public Task<Product> GetAsync(int id)
+    public async Task<Product?> GetAsync(int id)
     {
-        throw new NotImplementedException();
+        return await _context.Products.FindAsync(id);
     }
 
-    public Task<Product> UpdateAsync(Product product)
+    public async Task<Product> UpdateAsync(Product product)
     {
-        throw new NotImplementedException();
+        var existingProduct = await _context.Products.FindAsync(product.Id);
+        if(existingProduct is null)
+        {
+            throw new KeyNotFoundException("Product not found");
+        }
+
+        _context.Entry(existingProduct).CurrentValues.SetValues(product);
+        await _context.SaveChangesAsync();
+
+        return product;
     }
+
+    public async Task DeleteAsync(int id)
+    {
+        var existingProduct = await _context.Products.FindAsync(id);
+        if (existingProduct is null)
+        {
+            throw new KeyNotFoundException("Product Not found");
+        }
+
+        _context.Products.Remove(existingProduct);
+        await _context.SaveChangesAsync();
+
+        return;
+    }
+
+
+
+
+
+
 }
