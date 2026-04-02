@@ -34,6 +34,7 @@ public class ProductsController: ControllerBase
     }
 
     [HttpGet]
+    [ResponseCache(Duration = 60, Location =ResponseCacheLocation.Client)]
     public async Task<IActionResult> GetProducts()
     {
         var products =  await _service.GetAllProducts();
