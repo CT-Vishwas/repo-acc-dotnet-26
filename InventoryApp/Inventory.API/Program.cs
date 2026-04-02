@@ -1,12 +1,15 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Inventory.API.Middlewares;
+using Inventory.Core.Config;
 using Inventory.Core.DTOs.Responses;
 using Inventory.Core.DTOs.Validators;
 using Inventory.Core.Interfaces;
 using Inventory.Infra.Data;
 using Inventory.Infra.Repositories;
 using Inventory.Infra.Services;
+using Inventory.Infra.Utils;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
@@ -52,7 +55,39 @@ builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
+builder.Services.Configure<AdminSettings>(
+    builder.Configuration.GetSection(AdminSettings.SectionName));
+
+
+builder.Services.Configure<JwtSettings>(
+    builder.Configuration.GetSection(JwtSettings.SectionName));
+
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(
+    options=>
+    {
+        options.Password.RequiredLength = 8;
+        options.User.RequireUniqueEmail = true;
+    }
+)
+.AddEntityFrameworkStores<InventoryDbContext>()
+.AddDefaultTokenProviders();
+
 var app = builder.Build();
+// Seeding Admin
+using(var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    try
+    {
+        await ContextSeed.SeedRoleAndAdminAsync(services);
+    }catch(Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex,"An error occured while seeding database");
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
