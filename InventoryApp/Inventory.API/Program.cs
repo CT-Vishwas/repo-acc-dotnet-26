@@ -1,3 +1,4 @@
+using System.Text;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Inventory.API.Middlewares;
@@ -9,9 +10,11 @@ using Inventory.Infra.Data;
 using Inventory.Infra.Repositories;
 using Inventory.Infra.Services;
 using Inventory.Infra.Utils;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using Serilog;
 
@@ -63,6 +66,7 @@ builder.Services.Configure<JwtSettings>(
     builder.Configuration.GetSection(JwtSettings.SectionName));
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(
     options=>
     {
@@ -72,6 +76,29 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(
 )
 .AddEntityFrameworkStores<InventoryDbContext>()
 .AddDefaultTokenProviders();
+
+var jwtSettings = builder.Configuration.GetSection(JwtSettings.SectionName)
+.Get<JwtSettings>();
+
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtSettings.Issuer,
+        ValidAudiences = [jwtSettings.Audience],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
+    };
+});
 
 var app = builder.Build();
 // Seeding Admin
@@ -102,4 +129,6 @@ app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
 app.UseExceptionHandler();
 app.MapControllers();
+app.UseAuthentication();
+app.UseAuthorization();
 app.Run();

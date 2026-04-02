@@ -37,15 +37,15 @@ public class AuthController : ControllerBase
         return Ok(new ApiResponse<object?>(true, "Registration Sucessful", request.Username, []));
     }
 
-    // [HttpPost("login")]
-    // public async Task<IActionResult> Login([FromBody] LoginRequestDTO loginRequest)
-    // {
-    //     var result = await _authService.LoginAsync(loginRequest);
-    //     if(result == null)
-    //     {
-    //         return Unauthorized(new ApiResponse<UserResponseDTO?>(false, "Invalid Credentials", null,[]));
-    //     }
-    //     return Ok(new ApiResponse<UserResponseDTO?>(true, "Login Successful", result,[]));
-    // }
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginRequestDTO loginRequest)
+    {
+        var result = await _authService.LoginAsync(loginRequest);
+        if(result == null)
+        {
+            return Unauthorized(new ApiResponse<UserResponseDTO?>(false, "Invalid Credentials", null,[]));
+        }
+        return Ok(new ApiResponse<UserResponseDTO?>(true, "Login Successful", result,[]));
+    }
 
 }

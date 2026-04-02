@@ -2,10 +2,12 @@
 using Inventory.Core.DTOs.Requests;
 using Inventory.Core.DTOs.Responses;
 using Inventory.Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Inventory.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/v1/[controller]")]
 public class ProductsController: ControllerBase
@@ -20,6 +22,7 @@ public class ProductsController: ControllerBase
         _logger = logger;
     }
     
+    [Authorize(Roles ="Admin,Manager")]
     [HttpPost]
     public async Task<IActionResult> CreateProduct([FromBody] ProductRequestDTO productRequestDTO)
     {
