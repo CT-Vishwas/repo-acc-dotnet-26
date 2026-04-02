@@ -9,6 +9,7 @@ using Inventory.Infra.Repositories;
 using Inventory.Infra.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,7 +48,10 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    // defaults to /openapi/v1.json
     app.MapOpenApi();
+    // defaults to /scalar/v1
+    app.MapScalarApiReference();
 }
 
 app.UseHttpsRedirection();
