@@ -125,7 +125,31 @@ builder.Services.AddRateLimiter(options=>
     };
 });
 
+
+// Configuring HSTS
+builder.Services.AddHsts(options=>
+{
+    options.Preload = true;
+    options.IncludeSubDomains = true;
+    options.MaxAge = TimeSpan.FromDays(60);
+});
+
+// Configuring CORS
+var myAllowSpecificOrigins = "_myAllowSpecificOrgins";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: myAllowSpecificOrigins,
+    policy =>
+    {
+        policy.WithOrigins("https://localhost:3000")
+        .WithMethods("GET","POST","PUT","DELETE")
+        .WithHeaders("Content-Type", "Authorization");
+    });
+});
+
 var app = builder.Build();
+app.UseExceptionHandler();
+app.UseSerilogRequestLogging();
 // Seeding Admin
 using(var scope = app.Services.CreateScope())
 {
@@ -148,12 +172,14 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     // defaults to /scalar/v1
     app.MapScalarApiReference();
-}
 
-app.UseSerilogRequestLogging();
+    app.UseHsts();
+}
 app.UseHttpsRedirection();
-app.UseExceptionHandler();
-app.MapControllers();
+//For Conventional Routing
+// app.UseRouting();
+app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
+app.MapControllers();
 app.Run();
