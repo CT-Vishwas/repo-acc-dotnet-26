@@ -4,9 +4,11 @@ using Inventory.Core.DTOs.Responses;
 using Inventory.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Inventory.API.Controllers;
 
+[EnableRateLimiting("fixed")]
 [Authorize]
 [ApiController]
 [Route("api/v1/[controller]")]
